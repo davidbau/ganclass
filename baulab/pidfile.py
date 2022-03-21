@@ -19,7 +19,7 @@ def reserve_dir(*args):
     returns a function creates filenames within that directory.
 
     Usage:
-    
+
     ```
     # At the beginning of the program: exits right away if already done or being done.
     rdir = reserve_dir(experiment_directory)

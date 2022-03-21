@@ -645,10 +645,8 @@ class Numberbox(Widget):
         ''')
 
     def widget_html(self):
-        out = []
-        show.emit_tag('input', self.std_attrs(),
-                    type='numeric', value=self.value, size=self.size, out=out)
-        return ''.join(out)
+        return show.emit_tag('input', self.std_attrs(),
+                    type='numeric', value=self.value, size=self.size)
 
 class Range(Widget):
     def __init__(self, value=50, min=0, max=100, step=1, **kwargs):
@@ -800,8 +798,8 @@ class Menu(Widget):
             with show.enter_tag(show.Tag('select', name='menu'), out=out):
                 for value in self.choices:
                     with show.enter_tag(show.Tag('option',
-                            show.attrs(selected=None) if value == self.selection else None,
-                            value=value, out=out):
+                            (show.attrs(selected=None) if value == self.selection else None),
+                            value=value, out=out)):
                         out.append(html.escape(str(value)))
         return ''.join(out)
 
@@ -983,7 +981,8 @@ class Image(Widget):
         ''')
 
     def widget_html(self):
-        return show.emit_tag('img', self.std_attrs(), src=self.src)
+        return show.emit_tag('img', self.std_attrs(), show.style(margin=0),
+                src=self.src)
 
 
 ##########################################################################

@@ -40,7 +40,7 @@ class PaintWidget(Widget):
             #{v} .paintmask.vanishing {{
               opacity: 0; transition: opacity .1s ease-in-out; }}
             #{v} .paintmask.vanishing:hover {{ opacity: { self.opacity }; }}
-            </style>''']
+            </style>''')]
         show.emit_tag(self.std_attrs(), out=out)
         return ''.join(out)
 

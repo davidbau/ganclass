@@ -4,7 +4,7 @@ from .labwidget import Choice, Menu, Datalist, Div, ClickDiv, Image
 from .paintwidget import PaintWidget
 from .plotwidget import PlotWidget
 from . import pbar
-from .nethook import Trace, TraceDict
+from .nethook import Trace, TraceDict, set_requires_grad
 from .nethook import subsequence, get_module, get_parameter, replace_module
 from .runningstats import Stat, Mean, Variance, Covariance, Bincount, CrossCovariance
 from .runningstats import IoU, CrossIoU, Quantile, TopK, History, CombinedStat
