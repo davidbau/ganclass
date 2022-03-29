@@ -8,7 +8,6 @@
 # - show an array of arrays to horizontally lay them out as inline blocks.
 # - show an array of tuples to create a table.
 
-import PIL.Image
 import base64
 import collections
 from contextlib import contextmanager
