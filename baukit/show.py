@@ -1,12 +1,20 @@
 # show.py
 #
 # An abbreviated way to output simple HTML layout of text and images
-# into a python notebook.
+# into a python notebook.  You can call show(x, y, z) just like you
+# call display(x, y, z) in a notebook, but there are a few differences:
 #
-# - show a PIL image to show an inline HTML <img>.
-# - show an array of items to vertically stack them, centered in a block.
-# - show an array of arrays to horizontally lay them out as inline blocks.
-# - show an array of tuples to create a table.
+# (1) You can display PIL images and maplotlib figures, and they are
+#     represented as HTML images that can be seen.
+# (2) You can display lists of data, and nested lists, and they are
+#     displayed as layouts where the list elements are arranged either
+#     horizontally or vertically inside a flexbox layout, depending on
+#     the level of nesting. This is useful for creating layouts.
+# (3) You can construct HTML that can be customized by the caller.
+#     For example, showing the `style(width=50)` object will customize
+#     the next element shown to have CSS style `width:50px`.
+#     The HTML widget framework uses this facility, to provide
+#     interactive widgets that are easy to style.
 
 import base64
 import collections
@@ -25,6 +33,14 @@ def show(*args):
     HTML-rendered arguments.
     '''
     display(html(*args))
+
+def bare(*args):
+    '''
+    show.bare renders HTML without an automatic top-level element, which makes
+    it possible to output bare HTML without an element at all. It also puts
+    the output of top-level under the control of the user.
+    '''
+    display(bare_html(*args))
 
 def html(*args):
     '''
@@ -247,7 +263,10 @@ def render_html(obj, out):
     '''
     Use _repr_html_() when available and non-None.
     '''
-    h = obj._repr_html_()
+    try:
+        h = obj._repr_html_()
+    except:
+        return False
     if h is None:
         return False
     out.append(h)
@@ -307,6 +326,10 @@ def render_modifications(obj, out):
     assert isinstance(obj, (Tag, Attr, Style, ChildTag))
     modify_tag(obj)
 
+
+def class_name(x):
+    return x.__module__ + '.' + x.__name__
+
 def subclass_of(clsname):
     '''
     Detects if obj is a subclass of a class named clsname, without requiring import
@@ -314,7 +337,7 @@ def subclass_of(clsname):
     '''
     def test(obj):
         for x in inspect.getmro(type(obj)):
-            if clsname == x.__module__ + '.' + x.__name__:
+            if clsname == class_name(x):
                 return True
         return False
     return test

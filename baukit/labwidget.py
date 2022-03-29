@@ -648,6 +648,37 @@ class Numberbox(Widget):
         return show.emit_tag('input', self.std_attrs(),
                     type='numeric', value=self.value, size=self.size)
 
+class Textarea(Widget):
+    def __init__(self, value='', style=None, **kwargs):
+        super().__init__(style=defaulted(style, display='inline-block'), **kwargs)
+        # databinding is defined using Property objects.
+        self.value = Property(value)
+
+    def widget_js(self):
+        # Both "model" and "element" objects are defined within the scope
+        # where the js is run.    "element" looks for the element with id
+        # self.view_id(); if widget_html is overridden, this id should be used.
+        return minify('''
+          element.value = model.get('value');
+          element.addEventListener('keydown', (e) => {
+            if (e.code == 'Enter') {
+              model.set('value', element.value);
+            }
+          });
+          element.addEventListener('blur', (e) => {
+            model.set('value', element.value);
+          });
+          model.on('value', (ev) => {
+            element.value = model.get('value');
+          });
+        ''')
+
+    def widget_html(self):
+        out = []
+        with show.enter_tag('textarea', self.std_attrs(), out=out):
+            out.append(html.escape(self.value))
+        return ''.join(out)
+
 class Range(Widget):
     def __init__(self, value=50, min=0, max=100, step=1, **kwargs):
         super().__init__(**kwargs)
@@ -798,8 +829,8 @@ class Menu(Widget):
             with show.enter_tag(show.Tag('select', name='menu'), out=out):
                 for value in self.choices:
                     with show.enter_tag(show.Tag('option',
-                            (show.attrs(selected=None) if value == self.selection else None),
-                            value=value, out=out)):
+                            (show.attr(selected=None) if value == self.selection else None),
+                            value=value), out=out):
                         out.append(html.escape(str(value)))
         return ''.join(out)
 
